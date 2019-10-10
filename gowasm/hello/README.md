@@ -5,6 +5,9 @@ Hello wasm by golang
 
 Using golang v1.12
 
+## build
+GOOS=js GOARCH=wasm go build -o main.wasm
+
 ## for browser
 wasm_exec.js was copied from
 
