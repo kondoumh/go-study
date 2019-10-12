@@ -13,10 +13,13 @@ wasm_exec.js was copied from
 
 https://github.com/golang/go/tree/dev.boringcrypto.go1.12/misc/wasm
 
+execute http server at gowasm directory
 ```
 $ go get -u github.com/shurcooL/goexec
 $ goexec 'http.ListenAndServe(`:8080`, http.FileServer(http.Dir(`.`)))'
 ```
+
+Access localhost:8080/hello etc.
 
 ## for Node.js
 
