@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-func Do {
+func Do() {
 	h := time.Now().Hour()
 	switch {
 	case h >= 4 && h <= 9:
