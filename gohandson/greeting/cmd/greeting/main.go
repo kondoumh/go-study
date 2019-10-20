@@ -1,8 +1,11 @@
-
 package main
 
-import "github.com/tenntenn/gohandson/greeting"
+import (
+	"os"
+	"github.com/tenntenn/gohandson/greeting"
+)
 
 func main() {
-	greeting.Do()
+	var g greeting.Greeting
+	g.Do(os.Stdout)
 }
