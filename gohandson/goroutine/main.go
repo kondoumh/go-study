@@ -49,6 +49,10 @@ func (cups Coffee) HotWater() HotWater {
 	return HotWater(180*cups) / MilliLiterHotWater
 }
 
+func (cups Coffee) Beans() Bean {
+	return Bean(20*cups) / GramBeans
+}
+
 func (cups Coffee) GroundBeans() GroundBean {
 	return GroundBean(20*cups) / GramGroundBeans
 }
@@ -84,8 +88,8 @@ func main() {
 
 	var hotWater HotWater
 	for water > 0 {
-		water -= 600 * MilliLiterHotWater
-		hotWater += boil(500 * MilliLitterWater)
+		water -= 600 * MilliLitterWater
+		hotWater += boil(600 * MilliLitterWater)
 	}
 	fmt.Println(hotWater)
 
