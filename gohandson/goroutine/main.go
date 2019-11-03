@@ -1,7 +1,11 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"log"
+	"os"
+	"runtime/trace"
 	"time"
 )
 
@@ -57,28 +61,28 @@ func (cups Coffee) GroundBeans() GroundBean {
 	return GroundBean(20*cups) / GramGroundBeans
 }
 
-func boil(water Water) HotWater {
-	time.Sleep(400 * time.Millisecond)
-	return HotWater(water)
-}
-
-func grind(beans Bean) GroundBean {
-	time.Sleep(200 * time.Microsecond)
-	return GroundBean(beans)
-}
-
-func brew(hotWater HotWater, groundBeans GroundBean) Coffee {
-	time.Sleep(1 * time.Second)
-	cups1 := Coffee(hotWater / (1 * CupsCoffee).HotWater())
-	cups2 := Coffee(groundBeans / (1 * CupsCoffee).GroundBeans())
-	if cups1 < cups2 {
-		return cups1
-	}
-	return cups2
-}
-
 func main() {
+	f, err := os.Create("trace.out")
+	if err != nil {
+		log.Fatalln("Error:", err)
+	}
+	defer func() {
+		if err := f.Close(); err != nil {
+			log.Fatalln("Error:", err)
+		}
+	}()
+	if err := trace.Start(f); err != nil {
+		log.Fatalln("Error:", err)
+	}
+	defer trace.Stop()
+	_main()
+}
+
+func _main() {
 	const amountCoffee = 20 * CupsCoffee
+
+	ctx, task := trace.NewTask(context.Background(), "make coffee")
+	defer task.End()
 
 	water := amountCoffee.Water()
 	beans := amountCoffee.Beans()
@@ -89,14 +93,14 @@ func main() {
 	var hotWater HotWater
 	for water > 0 {
 		water -= 600 * MilliLitterWater
-		hotWater += boil(600 * MilliLitterWater)
+		hotWater += boil(ctx, 600 * MilliLitterWater)
 	}
 	fmt.Println(hotWater)
 
 	var groundBeans GroundBean
 	for beans > 0 {
 		beans -= 20 * GramBeans
-		groundBeans += grind(20 * GramBeans)
+		groundBeans += grind(ctx, 20 * GramBeans)
 	}
 	fmt.Println(groundBeans)
 
@@ -105,7 +109,30 @@ func main() {
 	for hotWater >= cups.HotWater() && groundBeans >= cups.GroundBeans() {
 		hotWater -= cups.HotWater()
 		groundBeans -= cups.GroundBeans()
-		coffee += brew(cups.HotWater(), cups.GroundBeans())
+		coffee += brew(ctx, cups.HotWater(), cups.GroundBeans())
 	}
 	fmt.Println(coffee)
+}
+
+func boil(ctx context.Context, water Water) HotWater {
+	defer trace.StartRegion(ctx, "boil").End()
+	time.Sleep(400 * time.Millisecond)
+	return HotWater(water)
+}
+
+func grind(ctx context.Context, beans Bean) GroundBean {
+	defer trace.StartRegion(ctx, "grind").End()
+	time.Sleep(200 * time.Millisecond)
+	return GroundBean(beans)
+}
+
+func brew(ctx context.Context, hotWater HotWater, groundBeans GroundBean) Coffee {
+	defer trace.StartRegion(ctx, "brew").End()
+	time.Sleep(1 * time.Second)
+	cups1 := Coffee(hotWater / (1 * CupsCoffee).HotWater())
+	cups2 := Coffee(groundBeans / (1 * CupsCoffee).GroundBeans())
+	if cups1 < cups2 {
+		return cups1
+	}
+	return cups2
 }
