@@ -90,6 +90,10 @@ func _main() {
 	fmt.Println(water)
 	fmt.Println(beans)
 
+	hwch := make(chan HotWater)
+	gbch := make(chan GroundBean)
+	cfch := make(chan Coffee)
+
 	var hotWater HotWater
 	for water > 0 {
 		water -= 600 * MilliLitterWater
