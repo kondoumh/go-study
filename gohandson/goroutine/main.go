@@ -94,49 +94,69 @@ func _main() {
 	gbch := make(chan GroundBean)
 	cfch := make(chan Coffee)
 
-	var hotWater HotWater
+	var hwCount int
 	for water > 0 {
+		hwCount++
 		water -= 600 * MilliLitterWater
-		hotWater += boil(ctx, 600 * MilliLitterWater)
+		go boil(ctx, hwch, 600 * MilliLitterWater)
+	}
+
+	var gbCount int
+	var groundBeans GroundBean
+	for beans > 0 {
+		beans -= 20 * GramBeans
+		gbCount++
+		go grind(ctx, gbch, 20 * GramBeans)
+	}
+
+	var hotWater HotWater
+	for i := 0; i < hwCount; i++ {
+		hotWater += <-hwch
 	}
 	fmt.Println(hotWater)
 
 	var groundBeans GroundBean
-	for beans > 0 {
-		beans -= 20 * GramBeans
-		groundBeans += grind(ctx, 20 * GramBeans)
+	for i := 0; i < gbCount; i++ {
+		groundBeans += <gbch
 	}
 	fmt.Println(groundBeans)
 
-	var coffee Coffee
+	var cfCount int
 	cups := 4 * CupsCoffee
 	for hotWater >= cups.HotWater() && groundBeans >= cups.GroundBeans() {
 		hotWater -= cups.HotWater()
 		groundBeans -= cups.GroundBeans()
-		coffee += brew(ctx, cups.HotWater(), cups.GroundBeans())
+		cfCount++
+		go= brew(ctx, cfch, cups.HotWater(), cups.GroundBeans())
+	}
+
+	var coffee Coffee
+	for i := 0; i < cfCount; i++ {
+		coffee += <-cfch
 	}
 	fmt.Println(coffee)
 }
 
-func boil(ctx context.Context, water Water) HotWater {
+func boil(ctx context.Context, ch chan<- HotWater, water Water) HotWater {
 	defer trace.StartRegion(ctx, "boil").End()
 	time.Sleep(400 * time.Millisecond)
-	return HotWater(water)
+	ch <- HotWater(water)
 }
 
-func grind(ctx context.Context, beans Bean) GroundBean {
+func grind(ctx context.Context, ch chan<- GroundBean, beans Bean) GroundBean {
 	defer trace.StartRegion(ctx, "grind").End()
 	time.Sleep(200 * time.Millisecond)
-	return GroundBean(beans)
+	ch <- GroundBean(beans)
 }
 
-func brew(ctx context.Context, hotWater HotWater, groundBeans GroundBean) Coffee {
+func brew(ctx context.Context, ch chan<- Coffee, hotWater HotWater, groundBeans GroundBean) Coffee {
 	defer trace.StartRegion(ctx, "brew").End()
 	time.Sleep(1 * time.Second)
 	cups1 := Coffee(hotWater / (1 * CupsCoffee).HotWater())
 	cups2 := Coffee(groundBeans / (1 * CupsCoffee).GroundBeans())
 	if cups1 < cups2 {
-		return cups1
+		ch <- cups1
+	} else {
+		ch <- cups2
 	}
-	return cups2
 }
