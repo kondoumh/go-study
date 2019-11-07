@@ -102,7 +102,6 @@ func _main() {
 	}
 
 	var gbCount int
-	var groundBeans GroundBean
 	for beans > 0 {
 		beans -= 20 * GramBeans
 		gbCount++
@@ -117,7 +116,7 @@ func _main() {
 
 	var groundBeans GroundBean
 	for i := 0; i < gbCount; i++ {
-		groundBeans += <gbch
+		groundBeans += <-gbch
 	}
 	fmt.Println(groundBeans)
 
@@ -127,7 +126,7 @@ func _main() {
 		hotWater -= cups.HotWater()
 		groundBeans -= cups.GroundBeans()
 		cfCount++
-		go= brew(ctx, cfch, cups.HotWater(), cups.GroundBeans())
+		go brew(ctx, cfch, cups.HotWater(), cups.GroundBeans())
 	}
 
 	var coffee Coffee
@@ -137,19 +136,19 @@ func _main() {
 	fmt.Println(coffee)
 }
 
-func boil(ctx context.Context, ch chan<- HotWater, water Water) HotWater {
+func boil(ctx context.Context, ch chan<- HotWater, water Water) {
 	defer trace.StartRegion(ctx, "boil").End()
 	time.Sleep(400 * time.Millisecond)
 	ch <- HotWater(water)
 }
 
-func grind(ctx context.Context, ch chan<- GroundBean, beans Bean) GroundBean {
+func grind(ctx context.Context, ch chan<- GroundBean, beans Bean) {
 	defer trace.StartRegion(ctx, "grind").End()
 	time.Sleep(200 * time.Millisecond)
 	ch <- GroundBean(beans)
 }
 
-func brew(ctx context.Context, ch chan<- Coffee, hotWater HotWater, groundBeans GroundBean) Coffee {
+func brew(ctx context.Context, ch chan<- Coffee, hotWater HotWater, groundBeans GroundBean) {
 	defer trace.StartRegion(ctx, "brew").End()
 	time.Sleep(1 * time.Second)
 	cups1 := Coffee(hotWater / (1 * CupsCoffee).HotWater())
