@@ -1,4 +1,4 @@
-module greeting
+module github.com/kondoumh/go-study/greeting
 
 go 1.12
 
