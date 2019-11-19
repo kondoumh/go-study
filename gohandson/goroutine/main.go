@@ -104,14 +104,14 @@ func _main() {
 	for water > 0 {
 		hwCount++
 		water -= 600 * MilliLitterWater
-		go boil(ctx, hwch, 600 * MilliLitterWater)
+		go boil(ctx, hwch, 600*MilliLitterWater)
 	}
 
 	var gbCount int
 	for beans > 0 {
 		beans -= 20 * GramBeans
 		gbCount++
-		go grind(ctx, gbch, 20 * GramBeans)
+		go grind(ctx, gbch, 20*GramBeans)
 	}
 
 	var hotWater HotWater
