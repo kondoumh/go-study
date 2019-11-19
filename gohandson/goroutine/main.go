@@ -9,6 +9,7 @@ import (
 	"time"
 )
 
+// type aliases
 type (
 	Bean       int
 	GroundBean int
@@ -17,6 +18,7 @@ type (
 	Coffee     int
 )
 
+// const values
 const (
 	GramBeans          Bean       = 1
 	GramGroundBeans    GroundBean = 1
@@ -45,18 +47,22 @@ func (cups Coffee) String() string {
 	return fmt.Sprintf("%d cup(s) coffee", int(cups))
 }
 
+// Water needed to make cups of coffee
 func (cups Coffee) Water() Water {
 	return Water(180*cups) / MilliLitterWater
 }
 
+// HotWater needed to make cups of coffee
 func (cups Coffee) HotWater() HotWater {
 	return HotWater(180*cups) / MilliLiterHotWater
 }
 
+// Beans needed to make cups of coffee
 func (cups Coffee) Beans() Bean {
 	return Bean(20*cups) / GramBeans
 }
 
+// GroundBeans needed to make cups of coffee
 func (cups Coffee) GroundBeans() GroundBean {
 	return GroundBean(20*cups) / GramGroundBeans
 }
