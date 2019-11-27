@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"io/ioutil"
 	"log"
+	"os"
 	"strings"
 )
 
@@ -29,10 +30,16 @@ func get(limit *int) {
 		fmt.Println(": " + strings.Join(v, ","))
 	}
 
+	file, err := os.Create("out.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
 	defer res.Body.Close()
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		log.Fatal(err)
 	}
+	file.Write(([]byte)(string(body)))
 	fmt.Println("[body ]" + string(body))
 }
