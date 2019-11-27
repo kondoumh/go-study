@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"flag"
 	"net/http"
 	"io/ioutil"
 	"log"
@@ -9,11 +10,15 @@ import (
 )
 
 func main() {
-	get()
+	limit := flag.Int("l", 10, "upper limit of fetching")
+	flag.Parse()
+	get(limit)
 }
 
-func get() {
-	res, err := http.Get("https://scrapbox.io/api/pages/kondoumh?limit=10")
+func get(limit *int) {
+	fmt.Println(*limit)
+	url := fmt.Sprintf("https://scrapbox.io/api/pages/kondoumh?limit=%d", *limit)
+	res, err := http.Get(url)
 	if err != nil {
 		log.Fatal(err)
 	}
