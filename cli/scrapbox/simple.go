@@ -1,11 +1,13 @@
 package main
 
 import (
-	"fmt"
+	"bytes"
+	"encoding/json"
 	"flag"
-	"net/http"
+	"fmt"
 	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
 	"strings"
 )
@@ -17,7 +19,6 @@ func main() {
 }
 
 func get(limit *int) {
-	fmt.Println(*limit)
 	url := fmt.Sprintf("https://scrapbox.io/api/pages/kondoumh?limit=%d", *limit)
 	res, err := http.Get(url)
 	if err != nil {
@@ -40,6 +41,8 @@ func get(limit *int) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	file.Write(([]byte)(string(body)))
-	fmt.Println("[body ]" + string(body))
+	var pj bytes.Buffer
+	json.Indent(&pj, []byte(body), "", " ")
+	file.Write(pj.Bytes())
+	fmt.Println(&pj)
 }
