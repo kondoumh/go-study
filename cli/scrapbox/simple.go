@@ -44,5 +44,4 @@ func get(limit *int) {
 	var pj bytes.Buffer
 	json.Indent(&pj, []byte(body), "", " ")
 	file.Write(pj.Bytes())
-	fmt.Println(&pj)
 }
