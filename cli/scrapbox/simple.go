@@ -14,12 +14,14 @@ import (
 
 func main() {
 	limit := flag.Int("l", 10, "upper limit of fetching")
+	order := flag.String("o", "updated", "ordering key {updated|views|linked}")
+	skip := flag.Int("s", 0, "skip count")
 	flag.Parse()
-	get(limit)
+	get(limit, order, skip)
 }
 
-func get(limit *int) {
-	url := fmt.Sprintf("https://scrapbox.io/api/pages/kondoumh?limit=%d", *limit)
+func get(limit *int, order *string, skip *int) {
+	url := fmt.Sprintf("https://scrapbox.io/api/pages/kondoumh?skip=%d&limit=%d&sort=%s", *skip, *limit, *order)
 	res, err := http.Get(url)
 	if err != nil {
 		log.Fatal(err)
