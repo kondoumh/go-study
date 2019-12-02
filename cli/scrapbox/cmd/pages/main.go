@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"github.com/kondoumh/go-study/cli/scrapbox"
 )
 
 func main() {
@@ -9,5 +10,5 @@ func main() {
 	order := flag.String("o", "updated", "ordering key {updated|views|linked}")
 	skip := flag.Int("s", 0, "skip count")
 	flag.Parse()
-	FetchPages("kondoumh", limit, order, skip)
+	scrapbox.FetchPages("kondoumh", limit, order, skip)
 }
