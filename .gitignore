@@ -11,6 +11,7 @@ https://github.com/simonwhitaker/gibo
 _obj
 _test
 _bin
+_out
 .theia
 
 # Architecture specific extensions/prefixes
