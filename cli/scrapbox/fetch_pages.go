@@ -38,3 +38,17 @@ func FetchPages(projectName string, limit *int, order *string, skip *int) {
 	json.Indent(&pj, []byte(body), "", " ")
 	file.Write(pj.Bytes())
 }
+
+func FetchPageDetail(projectName string, pageName string) {
+	url := fmt.Sprintf("https://scrapbox.io/api/pages/%s/%s", projectName, pageName)
+	res, err := http.Get(url)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer res.Body.Close()
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(string(body))
+}
