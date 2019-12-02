@@ -11,6 +11,8 @@ import (
 	"strings"
 )
 
+const OUT_DIR string = "_out"
+
 func FetchPages(projectName string, limit *int, order *string, skip *int) {
 	url := fmt.Sprintf("https://scrapbox.io/api/pages/%s?skip=%d&limit=%d&sort=%s", projectName, *skip, *limit, *order)
 	res, err := http.Get(url)
@@ -24,7 +26,10 @@ func FetchPages(projectName string, limit *int, order *string, skip *int) {
 		fmt.Println(": " + strings.Join(v, ","))
 	}
 
-	file, err := os.Create("out.json")
+	if _, err := os.Stat(OUT_DIR); os.IsNotExist(err) {
+		os.Mkdir(OUT_DIR, 0777)
+	}
+	file, err := os.Create("_out/pages.json")
 	if err != nil {
 		log.Fatal(err)
 	}
