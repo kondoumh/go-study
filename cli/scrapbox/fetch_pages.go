@@ -8,48 +8,43 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strings"
 )
 
 const OUT_DIR string = "_out"
 
 func FetchPages(projectName string, limit *int, order *string, skip *int) {
 	url := fmt.Sprintf("https://scrapbox.io/api/pages/%s?skip=%d&limit=%d&sort=%s", projectName, *skip, *limit, *order)
-	res, err := http.Get(url)
+	data, err := fetchData(url)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	fmt.Printf("[status] %d\n", res.StatusCode)
-	for k, v := range res.Header {
-		fmt.Println("[header] " + k)
-		fmt.Println(": " + strings.Join(v, ","))
-	}
-
-	defer res.Body.Close()
-	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		log.Fatal(err)
 	}
-	if err := writeJson("pages.json", body); err != nil {
+	if err := writeJson("pages.json", data); err != nil {
 		log.Fatal(err)
 	}
 }
 
 func FetchPageDetail(projectName string, pageName string) {
 	url := fmt.Sprintf("https://scrapbox.io/api/pages/%s/%s", projectName, pageName)
-	res, err := http.Get(url)
+	data, err := fetchData(url)
 	if err != nil {
 		log.Fatal(err)
+	}
+	if err := writeJson("page_detail.json", data); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func fetchData(url string) ([]byte, error) {
+	res, err := http.Get(url)
+	if err != nil {
+		return nil, err
 	}
 	defer res.Body.Close()
 	body, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
-	if err := writeJson("page_detail.json", body); err != nil {
-		log.Fatal(err)
-	}
+	return body, err
 }
 
 func writeJson(fileName string, data []byte) error {
