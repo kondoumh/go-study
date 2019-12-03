@@ -18,9 +18,6 @@ func FetchPages(projectName string, limit *int, order *string, skip *int) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if err != nil {
-		log.Fatal(err)
-	}
 	if err := writeJson("pages.json", data); err != nil {
 		log.Fatal(err)
 	}
