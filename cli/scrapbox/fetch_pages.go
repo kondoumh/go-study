@@ -48,24 +48,33 @@ func FetchPageDetail(projectName string, pageName string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	makeOutDir()
-	file, err := os.Create(OUT_DIR + "/pages_detail.json")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer file.Close()
 	defer res.Body.Close()
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		log.Fatal(err)
 	}
-	var pj bytes.Buffer
-	json.Indent(&pj, []byte(body), "", " ")
-	file.Write(pj.Bytes())
+	if err := writeJson("page_detail.json", body); err != nil {
+		log.Fatal(err)
+	}
 }
 
 func makeOutDir() {
 	if _, err := os.Stat(OUT_DIR); os.IsNotExist(err) {
 		os.Mkdir(OUT_DIR, 0777)
 	}
+}
+
+func writeJson(fileName string, data []byte) error {
+	if _, err := os.Stat(OUT_DIR); os.IsNotExist(err) {
+		os.Mkdir(OUT_DIR, 0777)
+	}
+	file, err := os.Create(OUT_DIR + "/" + fileName)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	var pj bytes.Buffer
+	json.Indent(&pj, []byte(data), "", " ")
+	file.Write(pj.Bytes())
+	return nil
 }
