@@ -26,20 +26,14 @@ func FetchPages(projectName string, limit *int, order *string, skip *int) {
 		fmt.Println(": " + strings.Join(v, ","))
 	}
 
-	makeOutDir()
-	file, err := os.Create(OUT_DIR + "/pages.json")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer file.Close()
 	defer res.Body.Close()
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		log.Fatal(err)
 	}
-	var pj bytes.Buffer
-	json.Indent(&pj, []byte(body), "", " ")
-	file.Write(pj.Bytes())
+	if err := writeJson("pages.json", body); err != nil {
+		log.Fatal(err)
+	}
 }
 
 func FetchPageDetail(projectName string, pageName string) {
@@ -55,12 +49,6 @@ func FetchPageDetail(projectName string, pageName string) {
 	}
 	if err := writeJson("page_detail.json", body); err != nil {
 		log.Fatal(err)
-	}
-}
-
-func makeOutDir() {
-	if _, err := os.Stat(OUT_DIR); os.IsNotExist(err) {
-		os.Mkdir(OUT_DIR, 0777)
 	}
 }
 
