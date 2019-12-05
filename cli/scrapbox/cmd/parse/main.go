@@ -8,15 +8,18 @@ import (
 )
 
 type Page struct {
-	Id     string `json:"id"`
-	Title  string `json:"title"`
-	Views  int    `json:"views"`
-	Linked int    `json:"linked"`
-	User   struct {
-		Id          string `json:"id"`
-		Name        string `json:"name"`
-		DisplayName string `json:"displayName"`
-	}
+	Id            string `json:"id"`
+	Title         string `json:"title"`
+	Views         int    `json:"views"`
+	Linked        int    `json:"linked"`
+	Author        User   `json:"user"`
+	Collaborators []User `json:"collaborators"`
+}
+
+type User struct {
+	Id          string `json:"id"`
+	Name        string `json:"name"`
+	DisplayName string `json:"displayName"`
 }
 
 func main() {
@@ -30,6 +33,8 @@ func main() {
 	}
 	fmt.Printf("%s : %s\n", page.Id, page.Title)
 	fmt.Printf("%d %d\n", page.Views, page.Linked)
-
-	fmt.Printf("%s %s\n", page.User.Name, page.User.DisplayName)
+	fmt.Printf("%s %s %s\n", page.Author.Id, page.Author.Name, page.Author.DisplayName)
+	for _, user := range page.Collaborators {
+		fmt.Printf("%s %s %s\n", user.Id, user.Name, user.DisplayName)
+	}
 }
