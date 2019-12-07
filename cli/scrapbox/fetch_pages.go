@@ -2,11 +2,13 @@ package scrapbox
 
 import (
 	"bytes"
+	"net/http/cookiejar"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 )
 
@@ -25,7 +27,7 @@ func FetchPages(projectName string, limit *int, order *string, skip *int) {
 
 func FetchPageDetail(projectName string, pageName string) {
 	url := fmt.Sprintf("https://scrapbox.io/api/pages/%s/%s", projectName, pageName)
-	data, err := fetchData(url)
+	data, err := fetchData2(url)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -36,6 +38,28 @@ func FetchPageDetail(projectName string, pageName string) {
 
 func fetchData(url string) ([]byte, error) {
 	res, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer res.Body.Close()
+	body, err := ioutil.ReadAll(res.Body)
+	return body, err
+}
+
+func fetchData2(rawurl string) ([]byte, error) {
+	jar, _ := cookiejar.New(nil)
+	var cookies []*http.Cookie
+	cookie := &http.Cookie {
+		Name: os.Getenv("COOKIE_NAME"),
+		Value: os.Getenv("COOKIE_VALUE"),
+		Path: "/",
+		Domain: os.Getenv("COOKIE_DOMAIN"),
+	}
+	cookies = append(cookies, cookie)
+	u, _ := url.Parse(rawurl)
+	jar.SetCookies(u, cookies)
+	client := &http.Client{ Jar: jar }
+	res, err := client.Get(rawurl)
 	if err != nil {
 		return nil, err
 	}
