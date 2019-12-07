@@ -2,12 +2,12 @@ package scrapbox
 
 import (
 	"bytes"
-	"net/http/cookiejar"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/http/cookiejar"
 	"net/url"
 	"os"
 )
@@ -56,16 +56,16 @@ func fetchData(url string) ([]byte, error) {
 func fetchData2(rawurl string) ([]byte, error) {
 	jar, _ := cookiejar.New(nil)
 	var cookies []*http.Cookie
-	cookie := &http.Cookie {
-		Name: os.Getenv("COOKIE_NAME"),
-		Value: os.Getenv("COOKIE_VALUE"),
-		Path: "/",
+	cookie := &http.Cookie{
+		Name:   os.Getenv("COOKIE_NAME"),
+		Value:  os.Getenv("COOKIE_VALUE"),
+		Path:   "/",
 		Domain: "scrapbox.io",
 	}
 	cookies = append(cookies, cookie)
 	u, _ := url.Parse(rawurl)
 	jar.SetCookies(u, cookies)
-	client := &http.Client{ Jar: jar }
+	client := &http.Client{Jar: jar}
 	res, err := client.Get(rawurl)
 	if err != nil {
 		return nil, err
