@@ -27,7 +27,14 @@ func FetchPages(projectName string, limit *int, order *string, skip *int) {
 
 func FetchPageDetail(projectName string, pageName string) {
 	url := fmt.Sprintf("https://scrapbox.io/api/pages/%s/%s", projectName, pageName)
-	data, err := fetchData2(url)
+	var data []byte
+	var err error
+	name := os.Getenv("COOKIE_NAME")
+	if name != "" {
+		data, err = fetchData2(url)
+	} else {
+		data, err = fetchData(url)
+	}
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -53,7 +60,7 @@ func fetchData2(rawurl string) ([]byte, error) {
 		Name: os.Getenv("COOKIE_NAME"),
 		Value: os.Getenv("COOKIE_VALUE"),
 		Path: "/",
-		Domain: os.Getenv("COOKIE_DOMAIN"),
+		Domain: "scrapbox.io",
 	}
 	cookies = append(cookies, cookie)
 	u, _ := url.Parse(rawurl)

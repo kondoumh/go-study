@@ -14,6 +14,5 @@ get page needs cookie
 ```
 export COOKIE_NAME=cookie_name
 export COOKIE_VALUE=fancy_cookie
-export COOKIE_DOMAIN=domain
 go run cmd/page_detail/main.go
 ```
