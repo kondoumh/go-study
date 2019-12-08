@@ -33,7 +33,8 @@ func main() {
 	}
 	fmt.Printf("%s : %s\n", page.Id, page.Title)
 	fmt.Printf("%d %d\n", page.Views, page.Linked)
-	fmt.Printf("%s %s %s\n", page.Author.Id, page.Author.Name, page.Author.DisplayName)
+	fmt.Printf("Author : %s %s %s\n", page.Author.Id, page.Author.Name, page.Author.DisplayName)
+	fmt.Printf("Collaborators:\n")
 	for _, user := range page.Collaborators {
 		fmt.Printf("%s %s %s\n", user.Id, user.Name, user.DisplayName)
 	}
