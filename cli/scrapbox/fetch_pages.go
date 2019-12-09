@@ -23,8 +23,7 @@ func FetchPageCount(projectName string) {
 	url := fmt.Sprintf("https://scrapbox.io/api/pages/%s?limit=1", projectName)
 	var data []byte
 	var err error
-	name := os.Getenv("COOKIE_NAME")
-	if name != "" {
+	if name := os.Getenv("COOKIE_NAME"); name != "" {
 		data, err = fetchData2(url)
 	} else {
 		data, err = fetchData(url)
@@ -43,8 +42,7 @@ func FetchPages(projectName string, limit *int, order *string, skip *int) {
 	url := fmt.Sprintf("https://scrapbox.io/api/pages/%s?skip=%d&limit=%d&sort=%s", projectName, *skip, *limit, *order)
 	var data []byte
 	var err error
-	name := os.Getenv("COOKIE_NAME")
-	if name != "" {
+	if name := os.Getenv("COOKIE_NAME"); name != "" {
 		data, err = fetchData2(url)
 	} else {
 		data, err = fetchData(url)
@@ -61,8 +59,7 @@ func FetchPageDetail(projectName string, pageName string) {
 	url := fmt.Sprintf("https://scrapbox.io/api/pages/%s/%s", projectName, pageName)
 	var data []byte
 	var err error
-	name := os.Getenv("COOKIE_NAME")
-	if name != "" {
+	if name := os.Getenv("COOKIE_NAME"); name != "" {
 		data, err = fetchData2(url)
 	} else {
 		data, err = fetchData(url)
