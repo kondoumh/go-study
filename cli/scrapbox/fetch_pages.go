@@ -21,13 +21,7 @@ type Project struct {
 
 func FetchPageCount(projectName string) {
 	url := fmt.Sprintf("https://scrapbox.io/api/pages/%s?limit=1", projectName)
-	var data []byte
-	var err error
-	if name := os.Getenv("COOKIE_NAME"); name != "" {
-		data, err = fetchData2(url)
-	} else {
-		data, err = fetchData(url)
-	}
+	data, err := fetchData(url)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -40,13 +34,7 @@ func FetchPageCount(projectName string) {
 
 func FetchPages(projectName string, limit *int, order *string, skip *int) {
 	url := fmt.Sprintf("https://scrapbox.io/api/pages/%s?skip=%d&limit=%d&sort=%s", projectName, *skip, *limit, *order)
-	var data []byte
-	var err error
-	if name := os.Getenv("COOKIE_NAME"); name != "" {
-		data, err = fetchData2(url)
-	} else {
-		data, err = fetchData(url)
-	}
+	data, err := fetchData(url)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -57,13 +45,7 @@ func FetchPages(projectName string, limit *int, order *string, skip *int) {
 
 func FetchPageDetail(projectName string, pageName string) {
 	url := fmt.Sprintf("https://scrapbox.io/api/pages/%s/%s", projectName, pageName)
-	var data []byte
-	var err error
-	if name := os.Getenv("COOKIE_NAME"); name != "" {
-		data, err = fetchData2(url)
-	} else {
-		data, err = fetchData(url)
-	}
+	data, err := fetchData(url)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -72,30 +54,26 @@ func FetchPageDetail(projectName string, pageName string) {
 	}
 }
 
-func fetchData(url string) ([]byte, error) {
-	res, err := http.Get(url)
-	if err != nil {
-		return nil, err
+func fetchData(rawurl string) ([]byte, error) {
+	var res *http.Response
+	var err error
+	if name := os.Getenv("COOKIE_NAME"); name == "" {
+		res, err = http.Get(rawurl)
+	} else {
+		jar, _ := cookiejar.New(nil)
+		var cookies []*http.Cookie
+		cookie := &http.Cookie{
+			Name:   os.Getenv("COOKIE_NAME"),
+			Value:  os.Getenv("COOKIE_VALUE"),
+			Path:   "/",
+			Domain: "scrapbox.io",
+		}
+		cookies = append(cookies, cookie)
+		u, _ := url.Parse(rawurl)
+		jar.SetCookies(u, cookies)
+		client := &http.Client{Jar: jar}
+		res, err = client.Get(rawurl)
 	}
-	defer res.Body.Close()
-	body, err := ioutil.ReadAll(res.Body)
-	return body, err
-}
-
-func fetchData2(rawurl string) ([]byte, error) {
-	jar, _ := cookiejar.New(nil)
-	var cookies []*http.Cookie
-	cookie := &http.Cookie{
-		Name:   os.Getenv("COOKIE_NAME"),
-		Value:  os.Getenv("COOKIE_VALUE"),
-		Path:   "/",
-		Domain: "scrapbox.io",
-	}
-	cookies = append(cookies, cookie)
-	u, _ := url.Parse(rawurl)
-	jar.SetCookies(u, cookies)
-	client := &http.Client{Jar: jar}
-	res, err := client.Get(rawurl)
 	if err != nil {
 		return nil, err
 	}
