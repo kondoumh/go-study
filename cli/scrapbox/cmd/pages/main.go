@@ -10,5 +10,6 @@ func main() {
 	order := flag.String("o", "updated", "ordering key {updated|views|linked}")
 	skip := flag.Int("s", 0, "skip count")
 	flag.Parse()
+	scrapbox.FetchPageCount("kondoumh")
 	scrapbox.FetchPages("kondoumh", limit, order, skip)
 }

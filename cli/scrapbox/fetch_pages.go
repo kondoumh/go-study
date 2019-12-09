@@ -14,6 +14,24 @@ import (
 
 const OUT_DIR string = "_out"
 
+type Project struct {
+	Name string `json:"projectName"`
+	Count int `json:"count"`
+}
+
+func FetchPageCount(projectName string) {
+	url := fmt.Sprintf("https://scrapbox.io/api/pages/%s?limit=1", projectName)
+	data, err := fetchData(url)
+	if err != nil {
+		log.Fatal(err)
+	}
+	var project Project
+	if err := json.Unmarshal(data, &project); err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("%s %d\n", project.Name, project.Count)
+}
+
 func FetchPages(projectName string, limit *int, order *string, skip *int) {
 	url := fmt.Sprintf("https://scrapbox.io/api/pages/%s?skip=%d&limit=%d&sort=%s", projectName, *skip, *limit, *order)
 	data, err := fetchData(url)
