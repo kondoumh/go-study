@@ -21,7 +21,14 @@ type Project struct {
 
 func FetchPageCount(projectName string) {
 	url := fmt.Sprintf("https://scrapbox.io/api/pages/%s?limit=1", projectName)
-	data, err := fetchData(url)
+	var data []byte
+	var err error
+	name := os.Getenv("COOKIE_NAME")
+	if name != "" {
+		data, err = fetchData2(url)
+	} else {
+		data, err = fetchData(url)
+	}
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -34,7 +41,14 @@ func FetchPageCount(projectName string) {
 
 func FetchPages(projectName string, limit *int, order *string, skip *int) {
 	url := fmt.Sprintf("https://scrapbox.io/api/pages/%s?skip=%d&limit=%d&sort=%s", projectName, *skip, *limit, *order)
-	data, err := fetchData(url)
+	var data []byte
+	var err error
+	name := os.Getenv("COOKIE_NAME")
+	if name != "" {
+		data, err = fetchData2(url)
+	} else {
+		data, err = fetchData(url)
+	}
 	if err != nil {
 		log.Fatal(err)
 	}
