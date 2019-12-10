@@ -19,17 +19,25 @@ type Project struct {
 	Count int `json:"count"`
 }
 
-func FetchPageCount(projectName string) {
-	url := fmt.Sprintf("https://scrapbox.io/api/pages/%s?limit=1", projectName)
-	data, err := fetchData(url)
+func FetchAllPages(projectName string) {
+	count, err := FetchPageCount(projectName)
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Printf("%s %d\n", projectName, count)
+}
+
+func FetchPageCount(projectName string) (int, error) {
+	url := fmt.Sprintf("https://scrapbox.io/api/pages/%s?limit=1", projectName)
+	data, err := fetchData(url)
+	if err != nil {
+		return 0, err
+	}
 	var project Project
 	if err := json.Unmarshal(data, &project); err != nil {
-		log.Fatal(err)
+		return 0, err
 	}
-	fmt.Printf("%s %d\n", project.Name, project.Count)
+	return project.Count, err
 }
 
 func FetchPages(projectName string, limit *int, order *string, skip *int) {
