@@ -17,6 +17,7 @@ const OUT_DIR string = "_out"
 type Project struct {
 	Name  string `json:"projectName"`
 	Count int    `json:"count"`
+	Skip  int    `json:"skip"`
 }
 
 func FetchAllPages(projectName string) {
@@ -25,6 +26,17 @@ func FetchAllPages(projectName string) {
 		log.Fatal(err)
 	}
 	fmt.Printf("%s %d\n", projectName, count)
+	const LIMIT = 100
+	for skip := 0; skip < count; skip += LIMIT {
+		url := fmt.Sprintf("https://scrapbox.io/api/pages/%s?skip=%d&limit=%d&sort=updated", projectName, skip, LIMIT)
+		data, err := fetchData(url)
+		if err != nil {
+			log.Fatal(err)
+		}
+		var project Project
+		json.Unmarshal(data, &project)
+		fmt.Printf("%d\n", project.Skip)
+	}
 }
 
 func FetchPageCount(projectName string) (int, error) {
