@@ -33,6 +33,7 @@ func FetchAllPages(projectName string) {
 	}
 	fmt.Printf("%s %d\n", projectName, count)
 	const LIMIT = 100
+	pages := []Page{}
 	for skip := 0; skip < count; skip += LIMIT {
 		url := fmt.Sprintf("https://scrapbox.io/api/pages/%s?skip=%d&limit=%d&sort=updated", projectName, skip, LIMIT)
 		data, err := fetchData(url)
@@ -41,11 +42,17 @@ func FetchAllPages(projectName string) {
 		}
 		var project Project
 		json.Unmarshal(data, &project)
-		fmt.Printf("%d: -------------------- \n", project.Skip)
 		for _, page := range project.Pages {
-			fmt.Printf("%s\n", page.Title)
+			pages = append(pages, page)
 		}
 	}
+	project := Project{}
+	project.Count = count
+	project.Name = projectName
+	project.Skip = 0
+	project.Pages = pages
+	data, _ := json.Marshal(project)
+	writeJson(projectName + ".json", data)
 }
 
 func FetchPageCount(projectName string) (int, error) {
