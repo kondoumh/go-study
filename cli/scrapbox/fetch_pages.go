@@ -18,6 +18,12 @@ type Project struct {
 	Name  string `json:"projectName"`
 	Count int    `json:"count"`
 	Skip  int    `json:"skip"`
+	Pages []Page `json:"pages"`
+}
+
+type Page struct {
+	Id string `json:"id"`
+	Title string `json:"title"`
 }
 
 func FetchAllPages(projectName string) {
@@ -35,7 +41,10 @@ func FetchAllPages(projectName string) {
 		}
 		var project Project
 		json.Unmarshal(data, &project)
-		fmt.Printf("%d\n", project.Skip)
+		fmt.Printf("%d: -------------------- \n", project.Skip)
+		for _, page := range project.Pages {
+			fmt.Printf("%s\n", page.Title)
+		}
 	}
 }
 
