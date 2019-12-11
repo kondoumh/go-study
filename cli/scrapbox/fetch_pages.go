@@ -15,8 +15,8 @@ import (
 const OUT_DIR string = "_out"
 
 type Project struct {
-	Name string `json:"projectName"`
-	Count int `json:"count"`
+	Name  string `json:"projectName"`
+	Count int    `json:"count"`
 }
 
 func FetchAllPages(projectName string) {
