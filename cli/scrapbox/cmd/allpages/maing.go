@@ -8,5 +8,5 @@ import (
 func main() {
 	project := flag.String("p", "kondoumh", "project name")
 	flag.Parse()
-	scrapbox.FetchAllPages(*project)
+	scrapbox.FetchPageList(*project)
 }

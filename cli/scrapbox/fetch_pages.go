@@ -26,7 +26,7 @@ type Page struct {
 	Title string `json:"title"`
 }
 
-func FetchAllPages(projectName string) {
+func FetchPageList(projectName string) {
 	count, err := FetchPageCount(projectName)
 	if err != nil {
 		log.Fatal(err)
