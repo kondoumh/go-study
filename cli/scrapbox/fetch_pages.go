@@ -68,6 +68,18 @@ func FetchPageCount(projectName string) (int, error) {
 	return project.Count, err
 }
 
+func FetchAllPages(projectName string) {
+	data, err := readFile(projectName + ".json")
+	if err != nil {
+		log.Fatal(err)
+	}
+	var project Project
+	json.Unmarshal(data, &project)
+	for _, page := range project.Pages {
+		fmt.Printf("%s\n", page.Title)
+	}
+}
+
 func FetchPages(projectName string, limit *int, order *string, skip *int) {
 	url := fmt.Sprintf("https://scrapbox.io/api/pages/%s?skip=%d&limit=%d&sort=%s", projectName, *skip, *limit, *order)
 	data, err := fetchData(url)
@@ -131,4 +143,12 @@ func writeJson(fileName string, data []byte) error {
 	json.Indent(&pj, []byte(data), "", " ")
 	file.Write(pj.Bytes())
 	return nil
+}
+
+func readFile(fileName string) ([]byte, error) {
+	raw, err := ioutil.ReadFile(OUT_DIR + "/" + fileName)
+	if err != nil {
+		return nil, err
+	}
+	return raw, err
 }
