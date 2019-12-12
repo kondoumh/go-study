@@ -97,7 +97,7 @@ func FetchPageDetail(projectName string, pageName string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if err := writeJson("page_detail.json", data); err != nil {
+	if err := writeJson(projectName + "_" + pageName + ".json", data); err != nil {
 		log.Fatal(err)
 	}
 }
