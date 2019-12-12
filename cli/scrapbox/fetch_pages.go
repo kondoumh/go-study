@@ -92,8 +92,8 @@ func FetchPages(projectName string, limit *int, order *string, skip *int) {
 }
 
 func FetchPageDetail(projectName string, pageName string) {
-	url := fmt.Sprintf("https://scrapbox.io/api/pages/%s/%s", projectName, pageName)
-	data, err := fetchData(url)
+	rawurl := fmt.Sprintf("https://scrapbox.io/api/pages/%s/%s", projectName, url.PathEscape(pageName))
+	data, err := fetchData(rawurl)
 	if err != nil {
 		log.Fatal(err)
 	}
