@@ -11,5 +11,5 @@ func main() {
 	page := flag.String("p", "Dev", "page title")
 	flag.Parse()
 
-	scrapbox.FetchPageDetail(*project, *page)
+	scrapbox.FetchPageDetail(*project, *page, 0)
 }

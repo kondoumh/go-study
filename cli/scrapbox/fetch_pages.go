@@ -75,8 +75,11 @@ func FetchAllPages(projectName string) {
 	}
 	var project Project
 	json.Unmarshal(data, &project)
+	index := 0
 	for _, page := range project.Pages {
 		fmt.Printf("%s\n", page.Title)
+		FetchPageDetail(projectName, page.Title, index)
+		index++
 	}
 }
 
@@ -91,13 +94,14 @@ func FetchPages(projectName string, limit *int, order *string, skip *int) {
 	}
 }
 
-func FetchPageDetail(projectName string, pageName string) {
+func FetchPageDetail(projectName string, pageName string, index int) {
 	rawurl := fmt.Sprintf("https://scrapbox.io/api/pages/%s/%s", projectName, url.PathEscape(pageName))
 	data, err := fetchData(rawurl)
 	if err != nil {
 		log.Fatal(err)
 	}
-	if err := writeJson(projectName + "_" + pageName + ".json", data); err != nil {
+	fileName := fmt.Sprintf("%s-%d.json", projectName, index)
+	if err := writeJson(fileName, data); err != nil {
 		log.Fatal(err)
 	}
 }
