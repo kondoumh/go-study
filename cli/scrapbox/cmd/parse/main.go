@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"os"
+
 	"github.com/cheggaaa/pb/v3"
 )
 
@@ -95,7 +97,14 @@ func main() {
 		bar.Increment()
 	}
 	bar.Finish()
+	file, err := os.Create("_out/" + *projectName + ".csv")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+	file.Write(([]byte)("User Name,Pages Created,Pages Contributed,Views of Created Pages,Links of Created Pages\n"))
 	for _, v := range contribs {
-		fmt.Printf("%s %d %d %d %d\n", v.UserName, v.PagesCreated, v.PagesContributed, v.ViewsCreatedPages, v.LinksCreatedPages)
+		data := fmt.Sprintf("%s,%d,%d,%d,%d\n", v.UserName, v.PagesCreated, v.PagesContributed, v.ViewsCreatedPages, v.LinksCreatedPages)
+		file.Write(([]byte)(data))
 	}
 }
