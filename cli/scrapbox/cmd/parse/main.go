@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"github.com/cheggaaa/pb/v3"
 )
 
 type Project struct {
@@ -52,6 +53,7 @@ func main() {
 	}
 
 	contribs := map[string]Contribute{}
+	bar := pb.StartNew(project.Count)
 	for i := 0; i < project.Count-1; i++ {
 		sfx := fmt.Sprintf("-%d.json", i+1)
 		bytes, err := ioutil.ReadFile("_out/" + *projectName + sfx)
@@ -90,6 +92,10 @@ func main() {
 				contribs[user.Id] = contrib
 			}
 		}
+		bar.Increment()
 	}
-	fmt.Println(contribs)
+	bar.Finish()
+	for _, v := range contribs {
+		fmt.Printf("%s %d %d %d %d\n", v.UserName, v.PagesCreated, v.PagesContributed, v.ViewsCreatedPages, v.LinksCreatedPages)
+	}
 }
