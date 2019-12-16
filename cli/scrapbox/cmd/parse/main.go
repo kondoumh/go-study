@@ -42,6 +42,13 @@ type Contribute struct {
 	LinksCreatedPages int
 }
 
+type ContributeDetail struct {
+	UserId           string
+	UserName         string
+	pagesCreated     []Page
+	PagesContributed []Page
+}
+
 func main() {
 	projectName := flag.String("p", "kondoumh", "project name")
 	flag.Parse()
