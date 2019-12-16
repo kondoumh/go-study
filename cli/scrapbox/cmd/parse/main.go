@@ -31,16 +31,17 @@ type User struct {
 }
 
 type Contribute struct {
-	UserId            string `json:"userId"`
-	UserName          string `json:"userName"`
-	PagesCreated      int    `json:"pagesCreated"`
-	PagesContributed  int    `json:"pagesContributed"`
-	ViewsCreatedPages int    `json:"viewsCreatesPages"`
-	LinksCreatedPages int    `json:"linksCreatedPages"`
+	UserId            string
+	UserName          string
+	PagesCreated      int
+	PagesContributed  int
+	ViewsCreatedPages int
+	LinksCreatedPages int
 }
 
 func main() {
 	projectName := flag.String("p", "kondoumh", "project name")
+	flag.Parse()
 	pjdata, err := ioutil.ReadFile("_out/" + *projectName + ".json")
 	if err != nil {
 		log.Fatal(err)
@@ -50,7 +51,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("%d\n", project.Count)
 	contribs := map[string]Contribute{}
 	for i := 0; i < project.Count-1; i++ {
 		sfx := fmt.Sprintf("-%d.json", i+1)
@@ -65,20 +65,31 @@ func main() {
 		elm, contains := contribs[page.Author.Id]
 		if contains {
 			elm.PagesCreated++
+			elm.ViewsCreatedPages += page.Views
+			elm.LinksCreatedPages += page.Linked
 			contribs[page.Author.Id] = elm
 		} else {
 			var contrib Contribute
 			contrib.UserId = page.Author.Id
+			contrib.UserName = page.Author.DisplayName
+			contrib.PagesCreated = 1
+			contrib.ViewsCreatedPages = page.Views
+			contrib.LinksCreatedPages = page.Linked
 			contribs[page.Author.Id] = contrib
 		}
-		fmt.Printf("%s : %s\n", page.Id, page.Title)
-		fmt.Printf("%d %d\n", page.Views, page.Linked)
-		fmt.Printf("Author : %s %s %s\n", page.Author.Id, page.Author.Name, page.Author.DisplayName)
-		fmt.Printf("Collaborators:\n")
 		for _, user := range page.Collaborators {
-			fmt.Printf("%s %s %s\n", user.Id, user.Name, user.DisplayName)
+			elm, contains := contribs[user.Id]
+			if contains {
+				elm.PagesContributed++
+				contribs[user.Id] = elm
+			} else {
+				var contrib Contribute
+				contrib.UserId = user.Id
+				contrib.UserName = user.DisplayName
+				contrib.PagesContributed = 1
+				contribs[user.Id] = contrib
+			}
 		}
 	}
-	data, _ := json.Marshal(contribs)
-	fmt.Println(data)
+	fmt.Println(contribs)
 }
