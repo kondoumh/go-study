@@ -30,6 +30,15 @@ type User struct {
 	DisplayName string `json:"displayName"`
 }
 
+type Contribute struct {
+	UserId            string `json:"userId"`
+	UserName          string `json:"userName"`
+	PagesCreated      int    `json:"pagesCreated"`
+	PagesContributed  int    `json:"pagesContributed"`
+	ViewsCreatedPages int    `json:"viewsCreatesPages"`
+	LinksCreatedPages int    `json:"linksCreatedPages"`
+}
+
 func main() {
 	projectName := flag.String("p", "kondoumh", "project name")
 	pjdata, err := ioutil.ReadFile("_out/" + *projectName + ".json")
@@ -42,7 +51,7 @@ func main() {
 	}
 
 	fmt.Printf("%d\n", project.Count)
-
+	contribs := map[string]Contribute{}
 	for i := 0; i < project.Count-1; i++ {
 		sfx := fmt.Sprintf("-%d.json", i+1)
 		bytes, err := ioutil.ReadFile("_out/" + *projectName + sfx)
@@ -53,6 +62,15 @@ func main() {
 		if err := json.Unmarshal(bytes, &page); err != nil {
 			log.Fatal(err)
 		}
+		elm, contains := contribs[page.Author.Id]
+		if contains {
+			elm.PagesCreated++
+			contribs[page.Author.Id] = elm
+		} else {
+			var contrib Contribute
+			contrib.UserId = page.Author.Id
+			contribs[page.Author.Id] = contrib
+		}
 		fmt.Printf("%s : %s\n", page.Id, page.Title)
 		fmt.Printf("%d %d\n", page.Views, page.Linked)
 		fmt.Printf("Author : %s %s %s\n", page.Author.Id, page.Author.Name, page.Author.DisplayName)
@@ -61,4 +79,6 @@ func main() {
 			fmt.Printf("%s %s %s\n", user.Id, user.Name, user.DisplayName)
 		}
 	}
+	data, _ := json.Marshal(contribs)
+	fmt.Println(data)
 }
