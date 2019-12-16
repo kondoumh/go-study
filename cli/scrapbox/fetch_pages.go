@@ -22,7 +22,7 @@ type Project struct {
 }
 
 type Page struct {
-	Id string `json:"id"`
+	Id    string `json:"id"`
 	Title string `json:"title"`
 }
 
@@ -52,7 +52,7 @@ func FetchPageList(projectName string) {
 	project.Skip = 0
 	project.Pages = pages
 	data, _ := json.Marshal(project)
-	writeJson(projectName + ".json", data)
+	writeJson(projectName+".json", data)
 }
 
 func FetchPageCount(projectName string) (int, error) {
