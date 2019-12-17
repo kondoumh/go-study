@@ -45,7 +45,7 @@ type Contribute struct {
 type ContributeDetail struct {
 	UserId           string
 	UserName         string
-	pagesCreated     []Page
+	PagesCreated     []Page
 	PagesContributed []Page
 }
 
@@ -62,6 +62,7 @@ func main() {
 	}
 
 	contribs := map[string]Contribute{}
+	contribdetails := map[string]ContributeDetail{}
 	bar := pb.StartNew(project.Count)
 	for i := 0; i < project.Count-1; i++ {
 		sfx := fmt.Sprintf("-%d.json", i+1)
@@ -101,6 +102,17 @@ func main() {
 				contribs[user.Id] = contrib
 			}
 		}
+		dt, contains := contribdetails[page.Author.Id]
+		if contains {
+			dt.PagesCreated = append(dt.PagesCreated, page)
+			contribdetails[page.Author.Id] = dt
+		} else {
+			var detail ContributeDetail
+			detail.UserId = page.Author.Id
+			detail.UserName = page.Author.DisplayName
+			detail.PagesCreated = append(detail.PagesCreated, page)
+			contribdetails[page.Author.Id] = detail
+		}
 		bar.Increment()
 	}
 	bar.Finish()
@@ -114,4 +126,5 @@ func main() {
 		data := fmt.Sprintf("%s,%d,%d,%d,%d\n", v.UserName, v.PagesCreated, v.PagesContributed, v.ViewsCreatedPages, v.LinksCreatedPages)
 		file.Write(([]byte)(data))
 	}
+	fmt.Println(contribdetails)
 }
