@@ -113,6 +113,19 @@ func main() {
 			detail.PagesCreated = append(detail.PagesCreated, page)
 			contribdetails[page.Author.Id] = detail
 		}
+		for _, user := range page.Collaborators {
+			elm, contains := contribdetails[user.Id]
+			if contains {
+				elm.PagesContributed = append(elm.PagesContributed, page)
+				contribdetails[user.Id] = elm
+			} else {
+				var detail ContributeDetail
+				detail.UserId = user.Id
+				detail.UserName = user.DisplayName
+				detail.PagesContributed = append(detail.PagesContributed, page)
+				contribdetails[user.Id] = detail
+			}
+		}
 		bar.Increment()
 	}
 	bar.Finish()
@@ -126,5 +139,21 @@ func main() {
 		data := fmt.Sprintf("%s,%d,%d,%d,%d\n", v.UserName, v.PagesCreated, v.PagesContributed, v.ViewsCreatedPages, v.LinksCreatedPages)
 		file.Write(([]byte)(data))
 	}
-	fmt.Println(contribdetails)
+	filed, err := os.Create("_out/" + *projectName + "_details.csv")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer filed.Close()
+	for _, v := range contribdetails {
+		data := fmt.Sprintf("%s\n", v.UserName)
+		data += "------- pages created ---------\n"
+		for _, pg := range v.PagesCreated {
+			data += fmt.Sprintf("%s\n", pg.Title)
+		}
+		data += "------- pages contributed ---------\n"
+		for _, pg := range v.PagesContributed {
+			data += fmt.Sprintf("%s\n", pg.Title)
+		}
+		filed.Write(([]byte)(data))
+	}
 }
