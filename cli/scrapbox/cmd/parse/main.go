@@ -139,7 +139,7 @@ func main() {
 		data := fmt.Sprintf("%s,%d,%d,%d,%d\n", v.UserName, v.PagesCreated, v.PagesContributed, v.ViewsCreatedPages, v.LinksCreatedPages)
 		file.Write(([]byte)(data))
 	}
-	filed, err := os.Create("_out/" + *projectName + "_details.csv")
+	filed, err := os.Create("_out/" + *projectName + "_details.txt")
 	if err != nil {
 		log.Fatal(err)
 	}
