@@ -129,7 +129,13 @@ func main() {
 		bar.Increment()
 	}
 	bar.Finish()
-	file, err := os.Create("_out/" + *projectName + ".csv")
+
+	outputContributes(*projectName, contribs)
+	outputContributeDetails(*projectName, contribdetails)
+}
+
+func outputContributes(projectName string, contribs map[string]Contribute) {
+	file, err := os.Create("_out/" + projectName + ".csv")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -139,7 +145,10 @@ func main() {
 		data := fmt.Sprintf("%s,%d,%d,%d,%d\n", v.UserName, v.PagesCreated, v.PagesContributed, v.ViewsCreatedPages, v.LinksCreatedPages)
 		file.Write(([]byte)(data))
 	}
-	filed, err := os.Create("_out/" + *projectName + "_details.txt")
+}
+
+func outputContributeDetails(projectName string, contribdetails map[string]ContributeDetail) {
+	filed, err := os.Create("_out/" + projectName + "_details.txt")
 	if err != nil {
 		log.Fatal(err)
 	}
