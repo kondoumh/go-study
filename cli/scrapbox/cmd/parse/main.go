@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"time"
+	"sync"
 
 	"github.com/cheggaaa/pb/v3"
 )
@@ -131,15 +132,14 @@ func main() {
 	}
 	bar.Finish()
 
-	quit := make(chan bool)
-	quit2 := make(chan bool)
-	go outputContributes(*projectName, contribs, quit)
-	go outputContributeDetails(*projectName, contribdetails, quit2)
-	<-quit
-	<-quit2
+	var wg sync.WaitGroup
+	wg.Add(2)
+	go outputContributes(*projectName, contribs, &wg)
+	go outputContributeDetails(*projectName, contribdetails, &wg)
+	wg.Wait()
 }
 
-func outputContributes(projectName string, contribs map[string]Contribute, quit chan bool) {
+func outputContributes(projectName string, contribs map[string]Contribute, wg *sync.WaitGroup) {
 	fmt.Printf("outputContributes start %s\n", time.Now())
 	file, err := os.Create("_out/" + projectName + ".csv")
 	if err != nil {
@@ -152,10 +152,10 @@ func outputContributes(projectName string, contribs map[string]Contribute, quit 
 		file.Write(([]byte)(data))
 	}
 	fmt.Printf("outputContributes end %s\n", time.Now())
-	quit <- true
+	wg.Done()
 }
 
-func outputContributeDetails(projectName string, contribdetails map[string]ContributeDetail, quit chan bool) {
+func outputContributeDetails(projectName string, contribdetails map[string]ContributeDetail, wg *sync.WaitGroup) {
 	fmt.Printf("outputContributesDetails start %s\n", time.Now())
 
 	filed, err := os.Create("_out/" + projectName + "_details.txt")
@@ -177,5 +177,5 @@ func outputContributeDetails(projectName string, contribdetails map[string]Contr
 		filed.Write(([]byte)(data))
 	}
 	fmt.Printf("outputContributesDetails end %s\n", time.Now())
-	quit <- true
+	wg.Done()
 }
