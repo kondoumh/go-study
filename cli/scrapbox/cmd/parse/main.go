@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"time"
 
 	"github.com/cheggaaa/pb/v3"
 )
@@ -131,14 +132,15 @@ func main() {
 	bar.Finish()
 
 	quit := make(chan bool)
-	go outputContributes(*projectName, contribs, quit)
-	<-quit
 	quit2 := make(chan bool)
+	go outputContributes(*projectName, contribs, quit)
 	go outputContributeDetails(*projectName, contribdetails, quit2)
+	<-quit
 	<-quit2
 }
 
 func outputContributes(projectName string, contribs map[string]Contribute, quit chan bool) {
+	fmt.Printf("outputContributes start %s\n", time.Now())
 	file, err := os.Create("_out/" + projectName + ".csv")
 	if err != nil {
 		log.Fatal(err)
@@ -149,10 +151,13 @@ func outputContributes(projectName string, contribs map[string]Contribute, quit 
 		data := fmt.Sprintf("%s,%d,%d,%d,%d\n", v.UserName, v.PagesCreated, v.PagesContributed, v.ViewsCreatedPages, v.LinksCreatedPages)
 		file.Write(([]byte)(data))
 	}
+	fmt.Printf("outputContributes end %s\n", time.Now())
 	quit <- true
 }
 
 func outputContributeDetails(projectName string, contribdetails map[string]ContributeDetail, quit chan bool) {
+	fmt.Printf("outputContributesDetails start %s\n", time.Now())
+
 	filed, err := os.Create("_out/" + projectName + "_details.txt")
 	if err != nil {
 		log.Fatal(err)
@@ -171,5 +176,6 @@ func outputContributeDetails(projectName string, contribdetails map[string]Contr
 		data += "===================================\n"
 		filed.Write(([]byte)(data))
 	}
+	fmt.Printf("outputContributesDetails end %s\n", time.Now())
 	quit <- true
 }
