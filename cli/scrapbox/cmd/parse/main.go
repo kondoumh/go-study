@@ -140,6 +140,7 @@ func main() {
 }
 
 func outputContributes(projectName string, contribs map[string]Contribute, wg *sync.WaitGroup) {
+	defer wg.Done()
 	fmt.Printf("outputContributes start %s\n", time.Now())
 	file, err := os.Create("_out/" + projectName + ".csv")
 	if err != nil {
@@ -152,10 +153,10 @@ func outputContributes(projectName string, contribs map[string]Contribute, wg *s
 		file.Write(([]byte)(data))
 	}
 	fmt.Printf("outputContributes end %s\n", time.Now())
-	wg.Done()
 }
 
 func outputContributeDetails(projectName string, contribdetails map[string]ContributeDetail, wg *sync.WaitGroup) {
+	defer wg.Done()
 	fmt.Printf("outputContributesDetails start %s\n", time.Now())
 
 	filed, err := os.Create("_out/" + projectName + "_details.txt")
@@ -177,5 +178,4 @@ func outputContributeDetails(projectName string, contribdetails map[string]Contr
 		filed.Write(([]byte)(data))
 	}
 	fmt.Printf("outputContributesDetails end %s\n", time.Now())
-	wg.Done()
 }
