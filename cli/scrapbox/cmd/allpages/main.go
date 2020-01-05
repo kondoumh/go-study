@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+
 	"github.com/kondoumh/go-study/cli/scrapbox"
 )
 
