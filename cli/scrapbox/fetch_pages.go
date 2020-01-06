@@ -68,6 +68,32 @@ func FetchPageCount(projectName string) (int, error) {
 	return project.Count, err
 }
 
+func ReadProjectFile(projectName string) ([][]Page, error) {
+
+	var divided [][]Page
+
+	data, err := readFile(projectName + ".json")
+
+	if err != nil {
+		return divided, err
+	}
+	var project Project
+	err2 := json.Unmarshal(data, &project)
+	if (err2 != nil) {
+		return divided, err2
+	}
+
+	chunkSize := len(project.Pages) / 2
+	for i := 0; i < len(project.Pages); i += chunkSize {
+		end := i + chunkSize
+		if end > len(project.Pages) {
+			end = len(project.Pages)
+		}
+		divided = append(divided, project.Pages[i:end])
+	}
+	return divided, nil
+}
+
 func FetchAllPages(projectName string) {
 	data, err := readFile(projectName + ".json")
 	if err != nil {
