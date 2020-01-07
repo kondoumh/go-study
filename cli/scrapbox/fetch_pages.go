@@ -10,6 +10,8 @@ import (
 	"net/http/cookiejar"
 	"net/url"
 	"os"
+	"strconv"
+	"sync"
 )
 
 const OUT_DIR string = "_out"
@@ -94,6 +96,14 @@ func ReadProjectFile(projectName string) ([][]Page, error) {
 	return divided, nil
 }
 
+func FetchPagesWait(projectName string, pages []Page, wg *sync.WaitGroup) {
+	defer wg.Done()
+	for _, page := range pages {
+		fmt.Printf("%s\n", page.Title)
+		FetchPageDetail(projectName, page.Title, page.Id)
+	}
+}
+
 func FetchAllPages(projectName string) {
 	data, err := readFile(projectName + ".json")
 	if err != nil {
@@ -104,7 +114,7 @@ func FetchAllPages(projectName string) {
 	index := 0
 	for _, page := range project.Pages {
 		fmt.Printf("%s\n", page.Title)
-		FetchPageDetail(projectName, page.Title, index)
+		FetchPageDetail(projectName, page.Title, strconv.Itoa(index))
 		index++
 	}
 }
@@ -120,13 +130,13 @@ func FetchPages(projectName string, limit *int, order *string, skip *int) {
 	}
 }
 
-func FetchPageDetail(projectName string, pageName string, index int) {
+func FetchPageDetail(projectName string, pageName string, index string) {
 	rawurl := fmt.Sprintf("https://scrapbox.io/api/pages/%s/%s", projectName, url.PathEscape(pageName))
 	data, err := fetchData(rawurl)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fileName := fmt.Sprintf("%s-%d.json", projectName, index)
+	fileName := fmt.Sprintf("%s-%s.json", projectName, index)
 	if err := writeJson(fileName, data); err != nil {
 		log.Fatal(err)
 	}
