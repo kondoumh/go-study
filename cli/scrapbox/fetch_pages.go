@@ -70,7 +70,7 @@ func FetchPageCount(projectName string) (int, error) {
 	return project.Count, err
 }
 
-func ReadProjectFile(projectName string, multiplicity int) ([][]Page, error) {
+func SplitProjectPages(projectName string, multiplicity int) ([][]Page, error) {
 
 	var divided [][]Page
 
