@@ -70,7 +70,7 @@ func FetchPageCount(projectName string) (int, error) {
 	return project.Count, err
 }
 
-func ReadProjectFile(projectName string) ([][]Page, error) {
+func ReadProjectFile(projectName string, multiplicity int) ([][]Page, error) {
 
 	var divided [][]Page
 
@@ -85,7 +85,7 @@ func ReadProjectFile(projectName string) ([][]Page, error) {
 		return divided, err2
 	}
 
-	chunkSize := len(project.Pages) / 3
+	chunkSize := len(project.Pages) / multiplicity
 	for i := 0; i < len(project.Pages); i += chunkSize {
 		end := i + chunkSize
 		if end > len(project.Pages) {

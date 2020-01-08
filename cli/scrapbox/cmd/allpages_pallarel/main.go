@@ -12,7 +12,7 @@ import (
 func main() {
 	project := flag.String("p", "kondoumh", "project name")
 	flag.Parse()
-	divided, _ := scrapbox.ReadProjectFile(*project)
+	divided, _ := scrapbox.ReadProjectFile(*project, 3)
 	var wg sync.WaitGroup
 
 	start := time.Now()
