@@ -81,7 +81,7 @@ func SplitProjectPages(projectName string, multiplicity int) ([][]Page, error) {
 	}
 	var project Project
 	err2 := json.Unmarshal(data, &project)
-	if (err2 != nil) {
+	if err2 != nil {
 		return divided, err2
 	}
 
