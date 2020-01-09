@@ -7,8 +7,8 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	"time"
 	"sync"
+	"time"
 
 	"github.com/cheggaaa/pb/v3"
 )
