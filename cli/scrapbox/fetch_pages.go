@@ -85,7 +85,10 @@ func SplitProjectPages(projectName string, multiplicity int) ([][]Page, error) {
 		return divided, err2
 	}
 
+	log.Printf("Total pages : %d\n", len(project.Pages))
+
 	chunkSize := len(project.Pages) / multiplicity
+	log.Printf("Chunk size : %d\n", chunkSize)
 	for i := 0; i < len(project.Pages); i += chunkSize {
 		end := i + chunkSize
 		if end > len(project.Pages) {
@@ -93,6 +96,12 @@ func SplitProjectPages(projectName string, multiplicity int) ([][]Page, error) {
 		}
 		divided = append(divided, project.Pages[i:end])
 	}
+	totalCount := 0
+	for _, pages := range divided {
+		totalCount += len(pages)
+		log.Printf("Size of chunk %d\n", len(pages))
+	}
+	log.Printf("Total pages to be fetched %d\n", totalCount)
 	return divided, nil
 }
 
