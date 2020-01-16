@@ -43,8 +43,16 @@ jobs:
         errcheck -blank . 2>&1 | tee ../publish/errcheck.txt
         popd
 
-    - name: upload reports
+    - name: Upload reports
       uses: actions/upload-artifact@v1
       with:
         name: build-reports
         path: publish
+
+    - name: Deploy reports to pages
+      uses: crazy-max/ghaction-github-pages@v1
+      with:
+        target_branch: gh-pages
+        build_dir: publish
+      env:
+        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
