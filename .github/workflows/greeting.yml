@@ -24,6 +24,16 @@ jobs:
     - name: Build
       run: pushd greeting && go build && popd
 
+    - name: Test
+      run: |
+        go get -u github.com/jstemmer/go-junit-report
+        export PATH=$PATH:~/go/bin
+        pushd greeting
+        go test -covermode=count -coverprofile=profile.out . -v | tee test.out
+        go tool cover -html=profile.out -o coverage.html
+        cat test.out | go-junit-report > junit.xml
+        popd
+
     - name: Lint
       run: |
         go get -u golang.org/x/lint/golint
@@ -34,14 +44,4 @@ jobs:
         golint . 2>&1 | tee ../lint/lint.txt
         trap "exit 0" ERR
         errcheck . 2>&1 | tee ../lint/errcheck.txt
-        popd
-
-    - name: Test
-      run: |
-        go get -u github.com/jstemmer/go-junit-report
-        export PATH=$PATH:~/go/bin
-        pushd greeting
-        go test -covermode=count -coverprofile=profile.out . -v | tee test.out
-        go tool cover -html=profile.out -o coverage.html
-        cat test.out | go-junit-report > junit.xml
         popd
