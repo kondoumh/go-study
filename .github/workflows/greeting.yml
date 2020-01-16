@@ -32,9 +32,7 @@ jobs:
         go test -covermode=count -coverprofile=profile.out . -v | tee test.out
         go tool cover -html=profile.out -o coverage.html
         cat test.out | go-junit-report > junit.xml
-        if $? != 0 ; then
-          exit 1
-        fi
+        exit 1
         popd
 
     - name: Lint
