@@ -34,6 +34,7 @@ jobs:
         go tool cover -html=profile.out -o coverage.html
         cat test.out | go-junit-report > junit.xml
         popd
+    - name: check on failures
       if: steps.test.outputs.status != 0
       run: exit 1
 
