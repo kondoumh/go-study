@@ -33,6 +33,7 @@ jobs:
         go tool cover -html=profile.out -o coverage.html
         cat test.out | go-junit-report > junit.xml
         popd
+        exit $?
 
     - name: Lint
       run: |
@@ -44,3 +45,4 @@ jobs:
         golint . 2>&1 | tee ../lint/lint.txt
         errcheck -blank . 2>&1 | tee ../lint/errcheck.txt
         popd
+        exit $?
