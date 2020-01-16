@@ -3,7 +3,7 @@ package greeting
 import "testing"
 
 func TestHello(t *testing.T) {
-	want := "こんにちは世界。"
+	want := "Ahoy, world!"
 	if got := Greet(); got != want {
 		t.Errorf("Greet() = %q, want %q", got, want)
 	}
