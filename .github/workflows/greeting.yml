@@ -26,18 +26,25 @@ jobs:
 
     - name: Test
       run: |
-        export PATH=$PATH:~/go/bin
-        cd greeting
+        mkdir -p publish
+        pushd greeting
         go test -covermode=count -coverprofile=profile.out . -v
-        go tool cover -html=profile.out -o coverage.html
+        go tool cover -html=profile.out -o ../publish/coverage.html
+        popd
 
     - name: Lint
       run: |
+        mkdir -p publish
         go get -u golang.org/x/lint/golint
         go get -u github.com/kisielk/errcheck
         export PATH=$PATH:~/go/bin
-        mkdir lint
         pushd greeting
-        golint . 2>&1 | tee ../lint/lint.txt
-        errcheck -blank . 2>&1 | tee ../lint/errcheck.txt
+        golint . 2>&1 | tee ../publish/lint.txt
+        errcheck -blank . 2>&1 | tee ../publish/errcheck.txt
         popd
+
+    - name: upload reports
+      uses: actions/upload-artifact@v1
+        with:
+          name: build-reports
+          path: publish
