@@ -25,6 +25,7 @@ jobs:
       run: pushd greeting && go build && popd
 
     - name: Test
+      id: test
       run: |
         go get -u github.com/jstemmer/go-junit-report
         export PATH=$PATH:~/go/bin
@@ -32,8 +33,9 @@ jobs:
         go test -covermode=count -coverprofile=profile.out . -v | tee test.out
         go tool cover -html=profile.out -o coverage.html
         cat test.out | go-junit-report > junit.xml
-        exit 1
         popd
+      if: steps.test.outputs.status != 0
+      run: exit 1
 
     - name: Lint
       run: |
