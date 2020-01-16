@@ -25,12 +25,11 @@ jobs:
       run: pushd greeting && go build && popd
 
     - name: Test
-      id: test
       run: |
-        go get -u github.com/jstemmer/go-junit-report
         export PATH=$PATH:~/go/bin
         cd greeting
         go test -covermode=count -coverprofile=profile.out . -v
+        go tool cover -html=profile.out -o coverage.html
 
     - name: Lint
       run: |
@@ -41,7 +40,4 @@ jobs:
         pushd greeting
         golint . 2>&1 | tee ../lint/lint.txt
         errcheck -blank . 2>&1 | tee ../lint/errcheck.txt
-        if $? != 0 ; then
-          exit 1
-        fi
         popd
