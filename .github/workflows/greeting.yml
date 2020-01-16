@@ -42,6 +42,5 @@ jobs:
         mkdir lint
         pushd greeting
         golint . 2>&1 | tee ../lint/lint.txt
-        trap "exit 0" ERR
         errcheck . 2>&1 | tee ../lint/errcheck.txt
         popd
