@@ -31,6 +31,9 @@ jobs:
         export PATH=$PATH:~/go/bin
         cd greeting
         go test -covermode=count -coverprofile=profile.out . -v | tee test.out
+    - name: check on failures
+      if: steps.test.outputs.status != 0
+      run: exit 1
 
     - name: Lint
       run: |
