@@ -32,8 +32,10 @@ jobs:
         go test -covermode=count -coverprofile=profile.out . -v | tee test.out
         go tool cover -html=profile.out -o coverage.html
         cat test.out | go-junit-report > junit.xml
+        if $? != 0 ; then
+          exit 1
+        fi
         popd
-        exit $?
 
     - name: Lint
       run: |
@@ -44,5 +46,7 @@ jobs:
         pushd greeting
         golint . 2>&1 | tee ../lint/lint.txt
         errcheck -blank . 2>&1 | tee ../lint/errcheck.txt
+        if $? != 0 ; then
+          exit 1
+        fi
         popd
-        exit $?
