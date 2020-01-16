@@ -45,6 +45,6 @@ jobs:
 
     - name: upload reports
       uses: actions/upload-artifact@v1
-        with:
-          name: build-reports
-          path: publish
+      with:
+        name: build-reports
+        path: publish
