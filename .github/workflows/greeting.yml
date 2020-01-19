@@ -26,9 +26,7 @@ jobs:
         run: |
           mkdir -p publish
           pushd greeting
-          result=0
-          go test -covermode=count -coverprofile=profile.out . -v; result=$? | tee result.out
-          test 0 -eq $result
+          go test -covermode=count -coverprofile=profile.out . -v; if [ $? -ne 0 ]; exit 1; fi | tee result.out
           go tool cover -html=profile.out -o ../publish/coverage.html
           popd
 
