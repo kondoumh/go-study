@@ -36,7 +36,7 @@ jobs:
           export PATH=$PATH:~/go/bin
           mkdir -p publish
           pushd greeting
-          go test . -v & 2>&1 | go-junit-report > ../publish/report.xml
+          go test -covermode=count . -v 2>&1 | go-junit-report > ../publish/report.xml
           popd
 
       - name: Lint
