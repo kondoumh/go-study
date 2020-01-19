@@ -33,8 +33,8 @@ jobs:
           go tool cover -html=profile.out -o ../publish/coverage.html
           popd
 
-      - name: Print failure
-        if: failure()
+      - name: Print test result
+        if: always()
         run: cat publish/result.txt
 
       - name: Lint
