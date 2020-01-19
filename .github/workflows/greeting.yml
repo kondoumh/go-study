@@ -24,6 +24,7 @@ jobs:
 
       - name: Test & coverage report
         run: |
+          mkdir -p publish
           pushd greeting
           go test -covermode=count -coverprofile=profile.out . -v
           go tool cover -html=profile.out -o ../publish/coverage.html
