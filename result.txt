@@ -1,0 +1,9 @@
+=== RUN   TestHello
+--- PASS: TestHello (0.00s)
+=== RUN   TestProverb
+--- PASS: TestProverb (0.00s)
+=== RUN   TestDoMinus
+--- PASS: TestDoMinus (0.00s)
+PASS
+coverage: 85.7% of statements
+ok  	github.com/kondoumh/go-study/greeting	0.003s	coverage: 85.7% of statements

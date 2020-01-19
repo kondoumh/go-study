@@ -1,0 +1,1 @@
+greeting.go:19:7:	res, _ := minus9(arg)

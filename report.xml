@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+	<testsuite tests="3" failures="0" time="0.003" name="github.com/kondoumh/go-study/greeting">
+		<properties>
+			<property name="go.version" value="go1.13.6"></property>
+			<property name="coverage.statements.pct" value="85.7"></property>
+		</properties>
+		<testcase classname="greeting" name="TestHello" time="0.000"></testcase>
+		<testcase classname="greeting" name="TestProverb" time="0.000"></testcase>
+		<testcase classname="greeting" name="TestDoMinus" time="0.000"></testcase>
+	</testsuite>
+</testsuites>

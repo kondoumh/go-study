@@ -1,0 +1,4 @@
+greeting.go:10:1: exported function Greet should have comment or be unexported
+greeting.go:14:1: exported function Proverb should have comment or be unexported
+greeting.go:18:1: exported function DoMinus should have comment or be unexported
+greeting.go:25:24: error strings should not be capitalized or end with punctuation or a newline
