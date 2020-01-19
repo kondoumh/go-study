@@ -24,10 +24,13 @@ jobs:
 
       - name: Test
         run: |
+          go get -u github.com/jstemmer/go-junit-report
+          export PATH=$PATH:~/go/bin
           mkdir -p publish
           pushd greeting
           go test -covermode=count -coverprofile=profile.out . -v; test $? -ne 0 && exit 1 | tee result.out
           go tool cover -html=profile.out -o ../publish/coverage.html
+          cat result.out | go-junit-report > result.xml
           popd
 
       - name: Lint
