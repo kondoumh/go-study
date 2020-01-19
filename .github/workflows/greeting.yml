@@ -28,9 +28,9 @@ jobs:
           export PATH=$PATH:~/go/bin
           mkdir -p publish
           pushd greeting
-          go test -covermode=count -coverprofile=profile.out . -v; test $? -ne 0 && exit 1 | tee result.out
+          go test -covermode=count -coverprofile=profile.out . -v; test $? -ne 0 && exit 1 | tee ../publish/result.txt
           go tool cover -html=profile.out -o ../publish/coverage.html
-          cat result.out | go-junit-report > ../publish/result.xml
+          cat result.txt | go-junit-report > ../publish/result.xml
           popd
 
       - name: Lint
