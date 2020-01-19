@@ -28,14 +28,14 @@ jobs:
           export PATH=$PATH:~/go/bin
           mkdir -p publish
           pushd greeting
-          go test -covermode=count -coverprofile=profile.out . -v 2>&1 > result.txt
-          cat result.txt | go-junit-report > ../publish/report.xml
+          go test -covermode=count -coverprofile=profile.out . -v 2>&1 > ../publish/result.txt
+          cat ../publish/result.txt | go-junit-report > ../publish/report.xml
           go tool cover -html=profile.out -o ../publish/coverage.html
           popd
 
       - name: Print failure
         if: failure()
-        run: cat result.txt
+        run: cat publish/result.txt
 
       - name: Lint
         if: always()
