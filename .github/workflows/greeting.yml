@@ -22,12 +22,10 @@ jobs:
       - name: Build
         run: pushd greeting && go build && popd
 
-      - name: Test & coverage report
+      - name: Test
         run: |
-          mkdir -p publish
           pushd greeting
-          go test -covermode=count -coverprofile=profile.out . -v > ../publish/result.txt
-          go tool cover -html=profile.out -o ../publish/coverage.html
+          go test -covermode=count . -v
           popd
 
       - name: Test & report
@@ -36,7 +34,8 @@ jobs:
           export PATH=$PATH:~/go/bin
           mkdir -p publish
           pushd greeting
-          go test -covermode=count . -v 2>&1 | go-junit-report > ../publish/report.xml
+          go test -covermode=count -coverprofile=profile.out . -v 2>&1 | go-junit-report > ../publish/report.xml
+          go tool cover -html=profile.out -o ../publish/coverage.html
           popd
 
       - name: Lint
