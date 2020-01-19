@@ -22,21 +22,20 @@ jobs:
       - name: Build
         run: pushd greeting && go build && popd
 
-      - name: Test
-        run: |
-          pushd greeting
-          go test -covermode=count . -v
-          popd
-
       - name: Test & report
         run: |
           go get -u github.com/jstemmer/go-junit-report
           export PATH=$PATH:~/go/bin
           mkdir -p publish
           pushd greeting
-          go test -covermode=count -coverprofile=profile.out . -v 2>&1 | go-junit-report > ../publish/report.xml
+          go test -covermode=count -coverprofile=profile.out . -v 2>&1 > result.txt
+          cat result.txt | go-junit-report > ../publish/report.xml
           go tool cover -html=profile.out -o ../publish/coverage.html
           popd
+
+      - name: Print failure
+        if: failure()
+        run: cat result.txt
 
       - name: Lint
         if: always()
