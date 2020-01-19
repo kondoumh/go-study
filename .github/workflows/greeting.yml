@@ -39,6 +39,7 @@ jobs:
           popd
 
       - name: Lint
+        if: always()
         run: |
           mkdir -p publish
           go get -u golang.org/x/lint/golint
