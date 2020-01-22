@@ -5,10 +5,13 @@ import (
 	"fmt"
 )
 
+type Release struct{}
+type Option struct{}
+
 type GitHub interface {
 	CreateRelease(ctx context.Context, opt *Option) (string, error)
 	GetRelease(ctx context.Context, tag string) (string, error)
-	DeleteRelease(ctx context.Context, relaeaseID int) error
+	DeleteRelease(ctx context.Context, relaeseID int) error
 }
 
 type GhRelease struct {
@@ -28,5 +31,17 @@ func (ghr *GhRelease) CreateNewRelease(ctx context.Context) (*Release, error) {
 	return &Release{}, nil
 }
 
-type Option struct{}
-type Release struct{}
+func (ghr *GhRelease) GetRelease(ctx context.Context, tag string) (string, error) {
+	version, err := ghr.c.GetRelease(ctx, tag)
+	if err != nil {
+		return "", fmt.Errorf("failed to get release: %v", err)
+	}
+	return version, nil
+}
+
+func (ghr *GhRelease) DeleteRelease(ctx context.Context, releaseID int) error {
+	if err := ghr.c.DeleteRelease(ctx, releaseID); err != nil {
+		return fmt.Errorf("failed to delete release: %v", err)
+	}
+	return nil
+}
