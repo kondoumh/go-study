@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 type fakeGitHub struct {
@@ -23,6 +25,23 @@ func (c *fakeGitHub) GetRelease(ctx context.Context, tag string) (string, error)
 func TestGhRelease_CreateNewRelease(t *testing.T) {
 	fakeclient := &fakeGitHub{
 		FakeCreateRelease: func(ctx context.Context, opt *Option) (string, error) {
+			return "v2.0", nil
+		},
+		FakeGetRelease: func(ctx context.Context, tag string) (string, error) {
+			return "v2.0", nil
+		},
+	}
+
+	ghr := &GhRelease{c: fakeclient}
+
+	release, err := ghr.CreateNewRelease(context.Background())
+	assert.NoError(t, err)
+	fmt.Printf("%v/n", release)
+}
+
+func TestGhRelease_CreateNewRelease_Error(t *testing.T) {
+	fakeclient := &fakeGitHub{
+		FakeCreateRelease: func(ctx context.Context, opt *Option) (string, error) {
 			return "v1.0", nil
 		},
 		FakeGetRelease: func(ctx context.Context, tag string) (string, error) {
@@ -32,9 +51,6 @@ func TestGhRelease_CreateNewRelease(t *testing.T) {
 
 	ghr := &GhRelease{c: fakeclient}
 
-	release, err := ghr.CreateNewRelease(context.Background())
-	if err != nil {
-		t.Error(err)
-	}
-	_ = release
+	_, err := ghr.CreateNewRelease(context.Background())
+	assert.Error(t, err)
 }
