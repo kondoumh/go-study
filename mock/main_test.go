@@ -22,24 +22,24 @@ func (c *fakeGitHub) GetRelease(ctx context.Context, tag string) (string, error)
 	return c.FakeGetRelease(ctx, tag)
 }
 
-func TestGhRelease_CreateNewRelease(t *testing.T) {
+func TestGhRelease_CreateRelease(t *testing.T) {
 	fakeclient := &fakeGitHub{
 		FakeCreateRelease: func(ctx context.Context, opt *Option) (string, error) {
-			return "v2.0", nil
+			return "v1.0", nil
 		},
 		FakeGetRelease: func(ctx context.Context, tag string) (string, error) {
-			return "v2.0", nil
+			return "v1.0", nil
 		},
 	}
 
 	ghr := &GhRelease{c: fakeclient}
 
-	release, err := ghr.CreateNewRelease(context.Background())
+	release, err := ghr.CreateRelease(context.Background())
 	assert.NoError(t, err)
 	fmt.Printf("%v/n", release)
 }
 
-func TestGhRelease_CreateNewRelease_Error(t *testing.T) {
+func TestGhRelease_CreateRelease_Error(t *testing.T) {
 	fakeclient := &fakeGitHub{
 		FakeCreateRelease: func(ctx context.Context, opt *Option) (string, error) {
 			return "v1.0", nil
@@ -51,6 +51,6 @@ func TestGhRelease_CreateNewRelease_Error(t *testing.T) {
 
 	ghr := &GhRelease{c: fakeclient}
 
-	_, err := ghr.CreateNewRelease(context.Background())
+	_, err := ghr.CreateRelease(context.Background())
 	assert.Error(t, err)
 }

@@ -22,7 +22,7 @@ type GhRelease struct {
 	c GitHub
 }
 
-func (ghr *GhRelease) CreateNewRelease(ctx context.Context) (*Release, error) {
+func (ghr *GhRelease) CreateRelease(ctx context.Context) (*Release, error) {
 	tag, err := ghr.c.CreateRelease(ctx, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create release: %v", err)
@@ -32,7 +32,7 @@ func (ghr *GhRelease) CreateNewRelease(ctx context.Context) (*Release, error) {
 		return nil, fmt.Errorf("failed to get created release: %v", err)
 	}
 
-	return &Release{ Version: "v1.0", ReleaseID: 1234 }, nil
+	return &Release{ Version: tag, ReleaseID: 1234 }, nil
 }
 
 func (ghr *GhRelease) GetRelease(ctx context.Context, tag string) (string, error) {
