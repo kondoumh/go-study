@@ -8,6 +8,7 @@ import (
 func main() {
 	Example_basics()
 	ExampleString()
+	ExampleEulerDirected()
 }
 
 // Build a plain graph and visit all of its edges.
@@ -116,4 +117,13 @@ func ExampleString() {
 	// 4 [{0 1} (2 1):8]
 }
 
+// Find an Euler walk in a directed graph.
+func ExampleEulerDirected() {
+	//  0 <--> 1 --> 2     3
+	g := graph.New(4)
+	g.AddBoth(0, 1)
+	g.Add(1, 2)
 
+	fmt.Println(graph.EulerDirected(g))
+	// Output: [1 0 1 2] true
+}
