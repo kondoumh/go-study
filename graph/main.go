@@ -9,6 +9,7 @@ func main() {
 	Example_basics()
 	ExampleString()
 	ExampleEulerDirected()
+	ExampleShortestPath()
 }
 
 // Build a plain graph and visit all of its edges.
@@ -126,4 +127,21 @@ func ExampleEulerDirected() {
 
 	fmt.Println(graph.EulerDirected(g))
 	// Output: [1 0 1 2] true
+}
+
+// Find a shortest path between two vertices in a graph.
+func ExampleShortestPath() {
+	g := graph.New(6)
+	g.AddBothCost(0, 1, 8) //  0==1--2
+	g.AddBothCost(0, 3, 2) //  |  |  |
+	g.AddBothCost(1, 2, 2) //  3--4==5
+	g.AddBothCost(1, 4, 2) //
+	g.AddBothCost(2, 5, 2) //  -- cost 2
+	g.AddBothCost(3, 4, 2) //  == cost 8
+	g.AddBothCost(4, 5, 8)
+
+	path, dist := graph.ShortestPath(g, 0, 5)
+	fmt.Println("path:", path, "length:", dist)
+	// Output:
+	// path: [0 3 4 1 2 5] length: 10
 }
