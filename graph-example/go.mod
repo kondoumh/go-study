@@ -1,4 +1,4 @@
-module graph
+module graph-example
 
 go 1.13
 
