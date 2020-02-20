@@ -10,6 +10,8 @@ func main() {
 	ExampleString()
 	ExampleEulerDirected()
 	ExampleShortestPath()
+	ExampleStrongComponents()
+	ExampleComponents()
 }
 
 // Build a plain graph and visit all of its edges.
@@ -144,4 +146,31 @@ func ExampleShortestPath() {
 	fmt.Println("path:", path, "length:", dist)
 	// Output:
 	// path: [0 3 4 1 2 5] length: 10
+}
+
+// Find the strongly connected components in a directed graph.
+func ExampleStrongComponents() {
+	g := graph.New(6)
+	g.AddBoth(0, 1) //  0 <--> 1 <--> 2
+	g.AddBoth(1, 2) //  ^      ^      ^
+	g.Add(3, 0)     //  |      |      |
+	g.AddBoth(3, 4) //  3 <--> 4 ---> 5
+	g.Add(4, 1)
+	g.Add(4, 5)
+	g.Add(5, 2)
+
+	fmt.Println(graph.StrongComponents(g))
+	// Output: [[2 1 0] [5] [4 3]]
+}
+
+// Find the weakly connected components in a directed graph.
+func ExampleComponents() {
+	g := graph.New(6)
+	g.AddBoth(0, 1) //  0 <--> 1 ---> 2
+	g.Add(1, 2)     //                ^
+	g.Add(4, 3)     //                |
+	g.AddBoth(5, 2) //  3 <--- 4      5
+
+	fmt.Println(graph.Components(g))
+	// Output: [[0 1 2 5] [3 4]]
 }
