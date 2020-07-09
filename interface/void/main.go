@@ -11,6 +11,7 @@ func main() {
 	i = "foo"
 	fmt.Println(i)
 
-	str, _ := i.(string)
+	str, ok := i.(string)
 	fmt.Println(str)
+	fmt.Println(ok)
 }
