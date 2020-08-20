@@ -4,6 +4,7 @@ on:
     paths:
       - greeting/**
       - .github/workflows/greeting.yml
+  workflow_dispatch:
 
 jobs:
   build:
@@ -63,3 +64,8 @@ jobs:
           build_dir: publish
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+
+      - name: Dump steps context
+        env:
+          STEPS_CONTEXT: ${{ toJson(steps) }}
+        run: echo "$STEPS_CONTEXT"
