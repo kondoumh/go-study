@@ -15,7 +15,7 @@ jobs:
         uses: actions/setup-go@v1
         with:
           go-version: 1.13
-        id: go
+        id: setup_go
 
       - name: Check out code into the Go module directory
         uses: actions/checkout@v1
@@ -33,6 +33,7 @@ jobs:
           cat ../publish/result.txt | go-junit-report > ../publish/report.xml
           go tool cover -html=profile.out -o ../publish/coverage.html
           popd
+        id: test
 
       - name: Print test result
         if: always()
@@ -49,6 +50,7 @@ jobs:
           golint . 2>&1 | tee ../publish/lint.txt
           errcheck -blank . 2>&1 | tee ../publish/errcheck.txt
           popd
+        id: lint
 
       - name: Upload reports
         if: always()
