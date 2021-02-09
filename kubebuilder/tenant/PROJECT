@@ -1,7 +1,0 @@
-domain: example.com
-repo: github.com/kondoumh/go-study/kubebuilder
-resources:
-- group: multitenancy
-  kind: Tenant
-  version: v1
-version: "2"
