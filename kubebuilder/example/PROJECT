@@ -1,3 +1,7 @@
 domain: example.com
 repo: github.com/kondoumh/go-study/kubebuilder/example
+resources:
+- group: webapp
+  kind: Guestbook
+  version: v1
 version: "2"
