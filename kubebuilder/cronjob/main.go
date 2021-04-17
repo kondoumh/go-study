@@ -58,6 +58,12 @@ func main() {
 		setupLog.Error(err, "unable to create controller", "controller", "CronJob")
 		os.Exit(1)
 	}
+
+	if os.Getenv("ENABLE_WEBHOOKS") != "false" {
+		if err = (&batch1.CronJob{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Captain")
+		}
+	}
 	// +kubebuilder:scaffold:builder
 
 	setupLog.Info("starting manager")
