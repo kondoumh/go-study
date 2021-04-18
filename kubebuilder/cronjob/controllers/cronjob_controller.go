@@ -102,7 +102,7 @@ func (r *CronJobReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 			log.Error(err, "unable to parse schedule time for child jobb", "job", &job)
 			continue
 		}
-		if scheduledTimeForJob ! = nil {
+		if scheduledTimeForJob != nil {
 			if mostRecentTime == nil {
 				mostRecentTime = scheduledTimeForJob
 			} else if mostRecentTime.Before(*scheduledTimeForJob) {
@@ -127,7 +127,7 @@ func (r *CronJobReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 
 	log.V(1).Info("job count", "active Jobs", len(activeJobs), "successful jobs", len(successfullJobs), "failed jobs", len(failedJobs))
 
-	if err: = r.Status().Update(ctx, &cronJob): err != nil {
+	if err := r.Status().Update(ctx, &cronJob); err != nil {
 		log.Error(err, "unable to update CronJob staus")
 		return ctrl.Result{}, err
 	}
@@ -231,14 +231,15 @@ func (r *CronJobReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 		}
 	}
 	missedRun, nextRun, err := getNextSchedule(&cronJob, r.Now())
-	if err != nil {}
+	if err != nil {
 		log.Error(err, "unable to update CronJob status")
 		// we don't realy care about requesting until we get an update that
 		// fixex the schedule, so don't return an error
 		return ctrl.Result{}, err
 	}
-	scheduleResult := ctrl.Result{RequeueAfter: nextRun.Sub(r.Now())} // save this so we can re-use it elsewhere
-	log = log.WithValues("now", r.Now(), "next run", next Run)
+
+	scheduledResult := ctrl.Result{RequeueAfter: nextRun.Sub(r.Now())} // save this so we can re-use it elsewhere
+	log = log.WithValues("now", r.Now(), "next run", nextRun)
 
 	// 6: Run anew job if it's on schedule, not past the deadline, and not blocked by our concurrency policy
 	if missedRun.IsZero() {
