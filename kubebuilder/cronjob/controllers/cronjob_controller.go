@@ -16,7 +16,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	batch "tutorial.kubebuilder.io/project/api/v1"
+	batch "github.com/kondoumh/go-study/tutorial.kubebuilder.io/project/api/v1"
 )
 
 // CronJobReconciler reconciles a CronJob object
