@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bytes"
 	"encoding/xml"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"os"
 )
@@ -33,7 +35,27 @@ func main() {
 	err = xml.Unmarshal(data, &bpmn)
 	checkError(err, "Unmarshal")
 
-	fmt.Println(bpmn)
+	fmt.Println(bpmn.Process.ID)
+
+	inner := xml.NewDecoder(bytes.NewBuffer(bpmn.Process.ProcessDefinition))
+	for {
+		token, err := inner.Token()
+		if err == io.EOF {
+			err = nil
+			break
+		}
+		checkError(err, "Token")
+		switch v := token.(type) {
+		case xml.StartElement:
+			switch v.Name.Local {
+			case "task":
+				var task BpmnTask
+				err := inner.DecodeElement(&task, &v)
+				checkError(err, "decode")
+				fmt.Println(task.ID, task.Name)
+			}
+		}
+	}
 }
 
 func checkError(err error, mes string) {
