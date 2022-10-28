@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"golang.org/x/sync/errgroup"
+	"github.com/bradhe/stopwatch"
 
 	"dagger.io/dagger"
 )
@@ -16,9 +17,12 @@ func main() {
 		os.Exit(1)
 	}
 	repo := os.Args[1]
+	watch := stopwatch.Start()
 	if err := build(repo); err != nil {
 		fmt.Println(err)
 	}
+	watch.Stop()
+	fmt.Printf("Milliseconds elapsed: %v\n", watch.Milliseconds())
 }
 
 func build(repoUrl string) error {
