@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"dagger.io/dagger"
 )
@@ -37,13 +38,30 @@ func build(repoUrl string) error {
 		return err
 	}
 	// 4. Load the golang image
+	workdir := client.Host().Workdir()
 	golang := client.Container().From("golang:latest")
 	// 5. Mount the cloned repo to the golang image
 	golang = golang.WithMountedDirectory("src", src).WithWorkdir("src")
-	// 6. Do th go build
-	_, err = golang.Exec(dagger.ContainerExecOpts{
+	// 6. Create the output path on the host for the build
+	path := "build/"
+	outpath := filepath.Join(".", path)
+	err = os.MkdirAll(outpath, os.ModePerm)
+	if err != nil {
+		return err
+	}
+	// 7. Do th go build
+	golang = golang.Exec(dagger.ContainerExecOpts{
 		Args: []string{"go", "build", "-o", "build/"},
-	}).ExitCode(ctx)
+	})
+
+	// 8. Get build output from builder
+	output, err := golang.Directory(path).ID(ctx)
+	if err != nil {
+		return err
+	}
+
+	// 9. Write the build output to the host
+	_, err = workdir.Write(ctx, output, dagger.HostDirectoryWriteOpts{Path: path})
 	if err != nil {
 		return err
 	}
