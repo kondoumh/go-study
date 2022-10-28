@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"golang.org/x/sync/errgroup"
 
 	"dagger.io/dagger"
 )
@@ -22,8 +23,11 @@ func main() {
 
 func build(repoUrl string) error {
 	fmt.Printf("Building %s\n", repoUrl)
-
+	
 	ctx := context.Background()
+	
+	g, ctx := errgroup.WithContext(ctx)
+
 	client, err := dagger.Connect(ctx)
 	if err != nil {
 		return err
@@ -46,26 +50,30 @@ func build(repoUrl string) error {
 
 	for _, goos := range oses {
 		for _, goarch := range arches {
-			path := fmt.Sprintf("build/%s/%s/", goos, goarch)
-			outpath := filepath.Join(".", path)
-			err = os.MkdirAll(outpath, os.ModePerm)
-			if err != nil {
-				return err
-			}
-			build := golang.WithEnvVariable("GOOS", goos)
-			build = build.WithEnvVariable("GOARCH", goarch)
-			build = build.Exec(dagger.ContainerExecOpts{
-				Args: []string{"go", "build", "-o", path},
+			goos, goarch := goos, goarch
+			g.Go(func() error {
+				path := fmt.Sprintf("build/%s/%s/", goos, goarch)
+				outpath := filepath.Join(".", path)
+				err = os.MkdirAll(outpath, os.ModePerm)
+				if err != nil {
+					return err
+				}
+				build := golang.WithEnvVariable("GOOS", goos)
+				build = build.WithEnvVariable("GOARCH", goarch)
+				build = build.Exec(dagger.ContainerExecOpts{
+					Args: []string{"go", "build", "-o", path},
+				})
+				output, err := build.Directory(path).ID(ctx)
+				if err != nil {
+					return err
+				}
+			
+				_, err = workdir.Write(ctx, output, dagger.HostDirectoryWriteOpts{Path: path})
+				if err != nil {
+					return err
+				}
+				return nil
 			})
-			output, err := build.Directory(path).ID(ctx)
-			if err != nil {
-				return err
-			}
-		
-			_, err = workdir.Write(ctx, output, dagger.HostDirectoryWriteOpts{Path: path})
-			if err != nil {
-				return err
-			}
 		}
 	}
 
