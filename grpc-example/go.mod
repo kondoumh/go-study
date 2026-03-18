@@ -1,10 +1,17 @@
 module go-study/grpc-example
 
-go 1.15
+go 1.24.0
 
 require (
-	github.com/golang/protobuf v1.5.3
-	google.golang.org/grpc v1.56.3
-	google.golang.org/grpc/examples v0.0.0-20201121004645-9da74c039bbf
-	google.golang.org/protobuf v1.33.0
+	github.com/golang/protobuf v1.5.4
+	google.golang.org/grpc v1.79.3
+	google.golang.org/grpc/examples v0.0.0-20250407062114-b368379ef8f6
+	google.golang.org/protobuf v1.36.10
+)
+
+require (
+	golang.org/x/net v0.48.0 // indirect
+	golang.org/x/sys v0.39.0 // indirect
+	golang.org/x/text v0.32.0 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20251202230838-ff82c1b0f217 // indirect
 )
